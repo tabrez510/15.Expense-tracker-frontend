@@ -5,7 +5,7 @@ const axiosInstance = axios.create({
 function validate () {
     const amount = document.getElementById('amount').value;
     const discription = document.getElementById('discription').value;
-    const catagory = document.getElementById('catagory ').value;
+    const catagory = document.getElementById('catagory').value;
 
     if(!amount){
         alert('Enter Your Amount');
@@ -15,15 +15,15 @@ function validate () {
         alert('Enter Your Discription');
         return false;
     }
-    // if(catagory){
-    //     alert('Choose Your Catagory');
-    //     return false;
-    // }
+    if(catagory == 'Choose Catagory'){
+        alert('Choose Your Catagory');
+        return false;
+    }
     return true;
 }
 
 async function handleFormSubmit (event) {
-    if(validate){
+    if(validate()){
         event.preventDefault();
 
         const amount = event.target.amount.value;
@@ -75,13 +75,15 @@ function showNewExpense (obj) {
 
     document.getElementById('amount').value = '';
     document.getElementById('discription').value = '';
-    document.getElementById('catagory').value = '';
+    document.getElementById('catagory').value = 'Choose Catagory';
 }
 
-async function editAppointment (id, event) {
+async function editExpense (id, event) {
     const catagory = event.parentElement.previousElementSibling.textContent;
     const discription = event.parentElement.previousElementSibling.previousElementSibling.textContent;
     const amount = event.parentElement.previousElementSibling.previousElementSibling.previousElementSibling.textContent;
+
+    console.log(amount, discription, catagory);
     
     
     // populate these values in the input fields
@@ -110,6 +112,10 @@ async function editAppointment (id, event) {
                 event.parentElement.previousElementSibling.textContent = inputCatagory;
                 event.parentElement.previousElementSibling.previousElementSibling.textContent = inputDiscription;
                 event.parentElement.previousElementSibling.previousElementSibling.previousElementSibling.textContent = inputAmount;
+
+                document.getElementById('amount').value = '';
+                document.getElementById('discription').value = '';
+                document.getElementById('catagory').value = 'Choose Catagory';
         
                 // update in database
                 const updt = await axiosInstance.put(`/expenses/${id}`, obj);
@@ -123,7 +129,7 @@ async function editAppointment (id, event) {
     })
 }
 
-async function deleteAppointment (id, event) {
+async function deleteExpense (id, event) {
     try {
         const tbody = document.querySelector('tbody');
         const tr = event.parentElement.parentElement;
